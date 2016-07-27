@@ -8,7 +8,7 @@
 from scrapy.item import Item, Field
 
 
-class RymRelease(Item):
+class RymChart(Item):
     # define the fields for your item here like:
     title = Field()
     artists = Field()

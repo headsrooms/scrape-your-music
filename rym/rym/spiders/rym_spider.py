@@ -1,4 +1,4 @@
-from rym.items import RymRelease
+from rym.items import RymChart
 from scrapy import Selector
 from scrapy import Spider
 
@@ -15,13 +15,13 @@ class RymSpider(Spider):
 
         i = 0
         for release in releases:
-            item = RymRelease()
+            item = RymChart()
             item['artists'] = release.xpath(
                 './/a[@class="artist"]/text()').extract()
             item['title'] = release.xpath(
                 '//a[@class="album"]/text()').extract()[i]
             item['year'] = release.xpath(
-                '//span[@class="chart_year"]/text()').extract()[i]
+                '//span[@class="chart_year"]/text()').re(r'\d+')[i]
             item['genres'] = release.xpath(
                  './/*[@class="genre"]/text()').extract()
             i += 1
