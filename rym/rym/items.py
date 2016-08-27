@@ -14,3 +14,6 @@ class RymChart(Item):
     artists = Field()
     year = Field()
     genres = Field()
+    average_rating = Field()
+    number_ratings = Field()
+    ranking = Field()
