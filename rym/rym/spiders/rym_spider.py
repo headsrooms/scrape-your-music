@@ -1,15 +1,13 @@
 import random
 
 import scrapy
-from rym.items import RymChart
+from py2neo import Graph
+from rym.items import RymChart, RymGenre
+from rym.pipelines import Genre
 from scrapy import Selector
 from scrapy import Spider
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError, TCPTimedOutError
-
-from fake_useragent import UserAgent
-
-ua = UserAgent()
 
 
 class RymChartSpider(Spider):
@@ -20,7 +18,7 @@ class RymChartSpider(Spider):
         i = 0
 
         for release in releases:
-            self.settings.USER_AGENT = ua.random
+            # self.settings.USER_AGENT = ua.random
             item = RymChart()
             item['artists'] = release.xpath(
                 './/a[@class="artist"]/text()').extract()
@@ -107,3 +105,47 @@ class RymYearChartSpider(RymChartSpider):
     start_url_2 = ""
     page = pages.pop()
     start_urls = [start_url_1 + str(page)]
+
+
+class RymGenreSpider(Spider):
+    name = "rymgenre"
+    allowed_domains = ["rateyourmusic.com"]
+    graph = Graph("http://localhost:7474/", password="01041990")
+    genres_db = list(Genre.select(graph))
+    start_url_1 = "http://rateyourmusic.com/genre/"
+
+    start_urls = ["http://rateyourmusic.com/genre/" + x.name.replace(" ", "+") for x in list(Genre.select(graph))]
+
+    def parse(self, response):
+        self.logger.info('Got successful response from {}'.format(response.url))
+        sel = Selector(response)
+        item = RymGenre()
+        item['name'] = sel.xpath('*//table[@class="mbgen"]/tr/td[2]/div/div/text()').extract()[0]
+        item['supergenres'] = sel.xpath(
+            '*//table[@class="mbgen"][1]/tr/td[2]/div/a/text()').extract()
+        item['subgenres'] = sel.xpath(
+            '*//table[@class="mbgen"][1]/tr/td[2]/div/div/div/a/text()').extract()
+
+        yield item
+
+    def errback_httpbin(self, failure):
+        # log all failures
+        self.logger.error(repr(failure))
+
+        # in case you want to do something special for some errors,
+        # you may need the failure's type:
+
+        if failure.check(HttpError):
+            # these exceptions come from HttpError spider middleware
+            # you can get the non-200 response
+            response = failure.value.response
+            self.logger.error('HttpError on %s', response.url)
+
+        elif failure.check(DNSLookupError):
+            # this is the original request
+            request = failure.request
+            self.logger.error('DNSLookupError on %s', request.url)
+
+        elif failure.check(TimeoutError, TCPTimedOutError):
+            request = failure.request
+            self.logger.error('TimeoutError on %s', request.url)

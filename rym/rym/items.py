@@ -9,7 +9,6 @@ from scrapy.item import Item, Field
 
 
 class RymChart(Item):
-    # define the fields for your item here like:
     title = Field()
     artists = Field()
     year = Field()
@@ -17,3 +16,9 @@ class RymChart(Item):
     average_rating = Field()
     number_ratings = Field()
     ranking = Field()
+
+
+class RymGenre(Item):
+    name = Field()
+    subgenres = Field()
+    supergenres = Field()

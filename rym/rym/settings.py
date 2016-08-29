@@ -2,7 +2,6 @@
 
 from fake_useragent import UserAgent
 
-ua = UserAgent()
 
 # Scrapy settings for rym project
 #
@@ -19,8 +18,8 @@ SPIDER_MODULES = ['rym.spiders']
 NEWSPIDER_MODULE = 'rym.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-# USER_AGENT = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/47.0"
-USER_AGENT = ua.random
+USER_AGENT = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/47.0"
+#USER_AGENT = ua.random
 # USER_AGENT = "Googlebot/1.0(googlebot@googlebot.com http://googlebot.com/)"
 
 # Obey robots.txt rules
@@ -32,13 +31,13 @@ ROBOTSTXT_OBEY = False
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 20
+DOWNLOAD_DELAY = 10
 # The download delay setting will honor only one of:
 # CONCURRENT_REQUESTS_PER_DOMAIN = 16
 # CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-COOKIES_ENABLED = False
+# COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
 # TELNETCONSOLE_ENABLED = False
@@ -65,7 +64,7 @@ COOKIES_ENABLED = False
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': 400,
     # 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 110,
-    'rym.middlewares.RandomUserAgentMiddleware': 410,
+    #'rym.middlewares.RandomUserAgentMiddleware': 410,
     # 'scrapy_fake_useragent.middleware.RandomUserAgentMiddleware': 400,
 }
 
@@ -74,8 +73,6 @@ DOWNLOADER_MIDDLEWARES = {
 # SCHEDULER_ORDER = 'BFO'
 
 CONCURRENT_REQUESTS = 1
-
-USER_AGENT_LIST = "user-agents.txt"
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
