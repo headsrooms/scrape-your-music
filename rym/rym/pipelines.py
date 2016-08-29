@@ -20,8 +20,20 @@ class Genre(GraphObject):
 
     name = Property()
 
-    supergenres = RelatedTo("Genre")
-    subgenres = RelatedTo("Genre")
+    subgenre_of = RelatedTo("Supergenre")
+    supergenre_of = RelatedTo("Subgenre")
+
+
+class Supergenre(Genre):
+    __primarykey__ = "name"
+
+    name = Property()
+
+
+class Subgenre(Genre):
+    __primarykey__ = "name"
+
+    name = Property()
 
 
 class Release(GraphObject):
@@ -70,9 +82,10 @@ class RymPipeline(object):
                     print(supergenre)
                     supergenre_object = Genre.select(self.graph).where(name=supergenre).first()
                     if not supergenre_object:
-                        supergenre_object = Genre()
+                        supergenre_object = Supergenre()
                         supergenre_object.name = supergenre
-                    genre_object.supergenres.add(supergenre_object)
+                    genre_object.subgenre_of.add(supergenre_object)
+                    supergenre_object.supergenre_of.add(genre_object)
                     self.graph.push(supergenre_object)
                     self.graph.push(genre_object)
 
@@ -83,9 +96,10 @@ class RymPipeline(object):
                         print(subgenre)
                         subgenre_object = Genre.select(self.graph).where(name=subgenre).first()
                         if not subgenre_object:
-                            subgenre_object = Genre()
+                            subgenre_object = Subgenre()
                             subgenre_object.name = subgenre
-                        genre_object.subgenres.add(subgenre_object)
+                        subgenre_object.subgenre_of.add(genre_object)
+                        genre_object.supergenre_of.add(subgenre_object)
                         self.graph.push(subgenre_object)
                         self.graph.push(genre_object)
         return item

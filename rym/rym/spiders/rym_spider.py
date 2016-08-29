@@ -111,10 +111,12 @@ class RymGenreSpider(Spider):
     name = "rymgenre"
     allowed_domains = ["rateyourmusic.com"]
     graph = Graph("http://localhost:7474/", password="01041990")
-    genres_db = list(Genre.select(graph))
     start_url_1 = "http://rateyourmusic.com/genre/"
 
     start_urls = ["http://rateyourmusic.com/genre/" + x.name.replace(" ", "+") for x in list(Genre.select(graph))]
+    # Because of banning for scraping
+    random.seed()
+    random.shuffle(start_urls)
 
     def parse(self, response):
         self.logger.info('Got successful response from {}'.format(response.url))

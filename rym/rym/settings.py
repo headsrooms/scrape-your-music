@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from fake_useragent import UserAgent
-
 
 # Scrapy settings for rym project
 #
@@ -19,7 +17,7 @@ NEWSPIDER_MODULE = 'rym.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENT = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/47.0"
-#USER_AGENT = ua.random
+# USER_AGENT = ua.random
 # USER_AGENT = "Googlebot/1.0(googlebot@googlebot.com http://googlebot.com/)"
 
 # Obey robots.txt rules
@@ -64,7 +62,7 @@ DOWNLOAD_DELAY = 10
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': 400,
     # 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 110,
-    #'rym.middlewares.RandomUserAgentMiddleware': 410,
+    # 'rym.middlewares.RandomUserAgentMiddleware': 410,
     # 'scrapy_fake_useragent.middleware.RandomUserAgentMiddleware': 400,
 }
 
