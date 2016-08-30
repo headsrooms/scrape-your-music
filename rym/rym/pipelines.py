@@ -63,12 +63,14 @@ class RymPipeline(object):
             release.year = item['year']
 
             for artist in item['artists']:
+                print(artist)
                 artist_object = Artist()
                 artist_object.name = artist
                 release.created_by.add(artist_object)
                 self.graph.push(artist_object)
 
             for genre in item['genres']:
+                print(genre)
                 genre_object = Genre()
                 genre_object.name = genre
                 release.belong_to.add(genre_object)
@@ -77,29 +79,39 @@ class RymPipeline(object):
             self.graph.push(release)
         else:
             if 'supergenres' in item:
-                genre_object = Genre.select(self.graph).where(name=item['name']).first()
-                for supergenre in item['supergenres']:
-                    print(supergenre)
-                    supergenre_object = Genre.select(self.graph).where(name=supergenre).first()
-                    if not supergenre_object:
-                        supergenre_object = Supergenre()
-                        supergenre_object.name = supergenre
-                    genre_object.subgenre_of.add(supergenre_object)
-                    supergenre_object.supergenre_of.add(genre_object)
-                    self.graph.push(supergenre_object)
-                    self.graph.push(genre_object)
+                self.create_supergenres(item)
 
             else:
                 if 'subgenres' in item:
-                    genre_object = Genre.select(self.graph).where(name=item['name']).first()
-                    for subgenre in item['subgenres']:
-                        print(subgenre)
-                        subgenre_object = Genre.select(self.graph).where(name=subgenre).first()
-                        if not subgenre_object:
-                            subgenre_object = Subgenre()
-                            subgenre_object.name = subgenre
-                        subgenre_object.subgenre_of.add(genre_object)
-                        genre_object.supergenre_of.add(subgenre_object)
-                        self.graph.push(subgenre_object)
-                        self.graph.push(genre_object)
+                    self.create_subgenres(item)
         return item
+
+    def create_subgenres(self, item):
+
+        genre_object = Genre()
+        genre_object.name = item['name']
+        for subgenre in item['subgenres']:
+            print(subgenre)
+            subgenre_object = Genre()
+            subgenre_object.name = subgenre
+
+            subgenre_object.subgenre_of.add(genre_object)
+            genre_object.supergenre_of.add(subgenre_object)
+
+            self.graph.push(subgenre_object)
+            self.graph.push(genre_object)
+
+    def create_supergenres(self, item):
+
+        genre_object = Genre()
+        genre_object.name = item['name']
+        for supergenre in item['supergenres']:
+            print(supergenre)
+            supergenre_object = Genre()
+            supergenre_object.name = supergenre
+
+            genre_object.subgenre_of.add(supergenre_object)
+            supergenre_object.supergenre_of.add(genre_object)
+
+            self.graph.push(supergenre_object)
+            self.graph.push(genre_object)

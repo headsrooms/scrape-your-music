@@ -5,5 +5,6 @@ ua = UserAgent()
 
 
 class RandomUserAgentMiddleware(object):
-    def process_request(self, request, spider):
+    @staticmethod
+    def process_request():
         get_project_settings().USER_AGENT = ua.random
