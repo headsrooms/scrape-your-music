@@ -62,8 +62,7 @@ DOWNLOAD_DELAY = 10
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': 400,
     # 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 110,
-    # 'rym.middlewares.RandomUserAgentMiddleware': 410,
-    # 'scrapy_fake_useragent.middleware.RandomUserAgentMiddleware': 400,
+    'rym.middlewares.RandomUserAgentMiddleware': 410,
 }
 
 # DUPEFILTER = True
